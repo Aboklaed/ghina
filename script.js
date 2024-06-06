@@ -1,49 +1,126 @@
-function getPrayerTimesAndWeather() {
-    const city = document.getElementById('cityInput').value;
-    const prayerApiUrl = `https://api.aladhan.com/v1/timingsByCity?city=${city}&country=&method=2&language=ar`;
-    const weatherApiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=7bfaaedfce8bf015290fa77bf77aec8f&units=metric&lang=ar`;
+// عرف الدالة لإضافة العضو
+function addMember() {
+    var name = document.getElementById("memberName").value;
+    var amount = parseFloat(document.getElementById("amountPaid").value) || 0;
+    var table = document.getElementById("membersTable");
 
-    // جلب مواقيت الصلاة
-    fetch(prayerApiUrl)
-        .then(response => response.json())
-        .then(data => {
-            const timings = data.data.timings;
-            const tableBody = document.querySelector('#prayerTimesTable tbody');
-            tableBody.innerHTML = `
-                <tr><td>الفجر</td><td>${convertTo12Hour(timings.Fajr)}</td></tr>
-                <tr><td>الشروق</td><td>${convertTo12Hour(timings.Sunrise)}</td></tr>
-                <tr><td>الظهر</td><td>${convertTo12Hour(timings.Dhuhr)}</td></tr>
-                <tr><td>العصر</td><td>${convertTo12Hour(timings.Asr)}</td></tr>
-                <tr><td>المغرب</td><td>${convertTo12Hour(timings.Maghrib)}</td></tr>
-                <tr><td>العشاء</td><td>${convertTo12Hour(timings.Isha)}</td></tr>
-            `;
-        })
-        .catch(error => {
-            console.error('Error fetching prayer times:', error);
-            alert('حدث خطأ في جلب مواقيت الصلاة. يرجى المحاولة مرة أخرى.');
-        });
+    // إنشاء صف جديد
+    var row = table.insertRow(-1);
+    var nameCell = row.insertCell(0);
+    var amountCell = row.insertCell(1);
+    var statusCell = row.insertCell(2);
+    var deleteCell = row.insertCell(3);
 
-    // جلب الطقس
-    fetch(weatherApiUrl)
-        .then(response => response.json())
-        .then(data => {
-            const weatherDiv = document.getElementById('weather');
-            weatherDiv.innerHTML = `
-                <p>الطقس في ${data.name}: ${data.weather[0].description}</p>
-                <p>درجة الحرارة: ${data.main.temp}°C</p>
-                <p>الرطوبة: ${data.main.humidity}%</p>
-            `;
-        })
-        .catch(error => {
-            console.error('Error fetching weather:', error);
-            alert('حدث خطأ في جلب الطقس. يرجى المحاولة مرة أخرى.');
-        });
+    // تعيين قيم الخلايا
+    nameCell.innerHTML = name;
+    amountCell.innerHTML = amount.toFixed(2);
+
+    // تحديث حالة الدفع
+    if (amount > 0) {
+        statusCell.innerHTML = "✔️";
+        statusCell.className = "paid";
+    } else {
+        statusCell.innerHTML = "❌";
+        statusCell.className = "unpaid";
+    }
+
+    // إنشاء زر الحذف
+    var deleteButton = document.createElement("button");
+    deleteButton.innerHTML = "حذف";
+    deleteButton.className = "deleteButton";
+    deleteButton.onclick = function() {
+        if (confirm("⚠️: هل أنت متأكد من رغبتك في حذف العضو '" + name + "'؟")) {
+            table.deleteRow(row.rowIndex);
+            // حذف العضو من Local Storage
+            var members = JSON.parse(localStorage.getItem("members")) || [];
+            members.splice(row.rowIndex - 1, 1);
+            localStorage.setItem("members", JSON.stringify(members));
+            updateTotalAmount();
+        }
+    };
+    deleteCell.appendChild(deleteButton);
+
+    // حفظ البيانات في Local Storage
+    var members = JSON.parse(localStorage.getItem("members")) || [];
+    members.push({ name: name, amount: amount });
+    localStorage.setItem("members", JSON.stringify(members));
+
+    // مسح الحقول بعد الإضافة
+    document.getElementById("memberName").value = "";
+    document.getElementById("amountPaid").value = "0";
+
+    // تحديث مجموع القطة
+    updateTotalAmount();
 }
 
-// تحويل الوقت من 24 ساعة إلى 12 ساعة
-function convertTo12Hour(time) {
-    const [hours, minutes] = time.split(':');
-    const period = +hours >= 12 ? 'م' : 'ص';
-    const adjustedHours = +hours % 12 || 12;
-    return `${adjustedHours}:${minutes} ${period}`;
+// دالة لطباعة الكشف
+function printReport() {
+    window.print();
 }
+
+// تحميل البيانات من Local Storage عند فتح الصفحة
+window.onload = function() {
+    var members = JSON.parse(localStorage.getItem("members")) || [];
+    var table = document.getElementById("membersTable");
+
+    members.forEach(function(member) {
+        var row = table.insertRow(-1);
+        var nameCell = row.insertCell(0);
+        var amountCell = row.insertCell(1);
+        var statusCell = row.insertCell(2);
+        var deleteCell = row.insertCell(3);
+
+        nameCell.innerHTML = member.name;
+        amountCell.innerHTML = parseFloat(member.amount).toFixed(2);
+
+        if (parseFloat(member.amount) > 0) {
+            statusCell.innerHTML = "✔️";
+            statusCell.className = "paid";
+        } else {
+            statusCell.innerHTML = "❌";
+            statusCell.className = "unpaid";
+        }
+
+        // إنشاء زر الحذف
+        var deleteButton = document.createElement("button");
+        deleteButton.innerHTML = "حذف";
+        deleteButton.className = "deleteButton";
+        deleteButton.onclick = function() {
+            if (confirm("⚠️: هل أنت متأكد من رغبتك في حذف العضو '" + member.name + "'؟")) {
+                table.deleteRow(row.rowIndex);
+                // حذف العضو من Local Storage
+                var index = members.findIndex(function(m) {
+                    return m.name === member.name && m.amount === member.amount;
+                });
+                if (index !== -1) {
+                    members.splice(index, 1);
+                    localStorage.setItem("members", JSON.stringify(members));
+                    updateTotalAmount();
+                }
+            }
+        };
+        deleteCell.appendChild(deleteButton);
+    });
+
+    // تحديث مجموع القطة عند تحميل الصفحة
+    updateTotalAmount();
+};
+
+// دالة لتحديث مجموع القطة
+function updateTotalAmount() {
+    var members = JSON.parse(localStorage.getItem("members")) || [];
+    var total = members.reduce((sum, member) => sum + parseFloat(member.amount), 0);
+    document.getElementById("totalAmount").innerText = "مجموع القطة: " + total.toFixed(2);
+}
+
+// إضافة حدث keyup لإدخال البيانات عند الضغط على Enter
+document.getElementById("memberName").addEventListener("keyup", function(event) {
+    if (event.key === "Enter") {
+        addMember();
+    }
+});
+document.getElementById("amountPaid").addEventListener("keyup", function(event) {
+    if (event.key === "Enter") {
+        addMember();
+    }
+});
