@@ -1,38 +1,33 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مواقيت الصلاة والطقس</title>
+    <title>قطة أعضاء الخيمة</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>مواقيت الصلاة</h1>
-        </div>
-        <input type="text" id="cityInput" placeholder="أدخل اسم المدينة">
-        <button onclick="getPrayerTimesAndWeather()">احصل على مواقيت الصلاة والطقس</button>
-        
-        <div id="weather">
-            <!-- سيتم ملء بيانات الطقس هنا -->
-        </div>
-        
-        <table id="prayerTimesTable">
-            <thead>
-                <tr>
-                    <th>الصلاة</th>
-                    <th>الوقت</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- سيتم ملء هذه البيانات بواسطة JavaScript -->
-            </tbody>
-        </table>
-    </div>
-    <footer>
-        <p>برمجة حسين العرياني</p>
-    </footer>
+    <h1>قطة أعضاء الخيمة</h1>
+    <form id="memberForm" class="formGroup">
+        <label for="memberName">اسم العضو:</label><br>
+        <input type="text" id="memberName" name="memberName"><br>
+    </form>
+    <form id="amountForm" class="formGroup">
+        <label for="amountPaid">المبلغ المدفوع:</label><br>
+        <input type="number" id="amountPaid" name="amountPaid" value=""><br>
+    </form>
+    <button type="button" onclick="addMember()">إضافة العضو</button>
+    <button type="button" onclick="printReport()">طباعة كشف</button>
+    <table id="membersTable">
+        <tr>
+            <th>الاسم</th>
+            <th>المبلغ المدفوع</th>
+            <th>الحالة</th>
+            <th>حذف</th>
+        </tr>
+    </table>
+    <div id="totalAmount">مجموع القطة: 0</div>
+    <footer>برمجة حسين العرياني</footer>
     <script src="script.js"></script>
 </body>
 </html>
