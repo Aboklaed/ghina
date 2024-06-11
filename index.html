@@ -3,36 +3,299 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مواقيت الصلاة والطقس</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>مواقيت الصلاة</title>
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: #f0f0f0;
+            color: #333;
+            direction: rtl;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            justify-content: center;
+            align-items: center;
+            height: 150vh;
+            flex-direction: column;
+        }
+        .container {
+            max-width: 600px;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #4CAF50;
+        }
+        input[type="text"] {
+            width: 95%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .info, .weather, .prayer-times, .city-image {
+            margin: 20px 0;
+        }
+        .info h3, .weather h3, .prayer-times h3 {
+            color: #4CAF50;
+        }
+        .note {
+            background-color: #f9f9f9;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 10px;
+            text-align: left;
+            width: 95%;
+            height: 100%;
+            margin: 1 10px;
+          
+        }
+        .buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+        .footer {
+            font-size: 18px;
+            background-color: #4CAF50;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 20px;
+            height: 4%;
+            align: center;
+            display: flex;
+            margin: 0 15px; /* الهوامش الأفقية، يمكن تعديلها حسب الحاجة */
+            justify-content: center; /* لتوسيط أفقياً */
+            align-items: center; /* لتوسيط عمودياً */
+            height: 40px; /* يمكن تغييرها حسب رغبتك */
+            color: white; /* يمكن تغييرها حسب رغبتك */
+}
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <h1>مواقيت الصلاة</h1>
-        </div>
-        <input type="text" id="cityInput" placeholder="أدخل اسم المدينة">
-        <button onclick="getPrayerTimesAndWeather()">احصل على مواقيت الصلاة والطقس</button>
-        
-        <div id="weather">
-            <!-- سيتم ملء بيانات الطقس هنا -->
-        </div>
-        
-        <table id="prayerTimesTable">
-            <thead>
+        <h1>معلومات عن المدن</h1>
+        <input type="text" id="city" placeholder="أدخل اسم المدينة" oninput="fetchCityInfo()" onkeypress="hideKeyboard(event)">
+        <div class="note">
+            <table style="width: 100%; table-layout: fixed;">
                 <tr>
-                    <th>الصلاة</th>
-                    <th>الوقت</th>
+                    <td colspan="2" style="text-align: right;">
+                        <div class="info" id="city-info"></div>
+                    </td>
                 </tr>
-            </thead>
-            <tbody>
-                <!-- سيتم ملء هذه البيانات بواسطة JavaScript -->
-            </tbody>
-        </table>
+                <tr>
+                    <td style="width: 50%; text-align: right;">
+                        <div class="prayer-times" id="prayer-times"></div>
+                    </td>
+                    <td style="width: 50%; text-align: right;">
+                        <div class="weather" id="weather-info"></div>
+                    </td>
+                </tr>
+            </table>
+            <div class="city-image" id="city-image"></div>
+            <div class="buttons">
+                <button onclick="shareCityInfo()">📤 مشاركة</button>
+                <button onclick="speakCityInfo()">🔊 قراءة</button>
+                <button onclick="stopSpeaking()">⏹️ إيقاف</button>
+            </div>
+        </div>
     </div>
-    <footer>
-        <p>برمجة حسين العرياني</p>
-    </footer>
-    <script src="script.js"></script>
+    <div class="footer">برمجة حسين العرياني</div>
+    <script>
+  
+        document.addEventListener("DOMContentLoaded", function() {
+    getLocation();
+
+    // إضافة مستمع للحدث لتغيير المدينة يدويًا
+    document.getElementById("city").addEventListener("change", function() {
+        fetchCityInfo();
+    });
+});
+
+async function getLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition, showError);
+    } else {
+        console.log("متصفحك لا يدعم خدمات الموقع الجغرافي.");
+    }
+}
+
+async function showPosition(position) {
+    const latitude = position.coords.latitude;
+    const longitude = position.coords.longitude;
+    
+    console.log("الموقع الجغرافي - خط العرض: " + latitude + "، خط الطول: " + longitude);
+    
+    const city = await getCityFromCoordinates(latitude, longitude);
+    document.getElementById('city').value = city;
+    
+    fetchCityInfo();
+}
+
+async function getCityFromCoordinates(latitude, longitude) {
+    const reverseGeocodingApiUrl = `https://api.openweathermap.org/geo/1.0/reverse?lat=${latitude}&lon=${longitude}&limit=1&appid=cbc51ce6b403bc63ab3729807141973a&lang=ar`;
+
+    try {
+        const response = await fetch(reverseGeocodingApiUrl);
+
+        if (!response.ok) {
+            throw new Error('Error fetching city data');
+        }
+
+        const data = await response.json();
+        let city = data[0].name;
+        
+        // إزالة "Governorate of" إذا كان موجودًا في اسم المدينة
+        city = city.replace('Governorate of ', '');
+
+        // تصحيح اسم المدينة
+        if (city === "Jidda") {
+            city = "Jeddah";
+        }
+
+        return city;
+    } catch (error) {
+        console.error('Error:', error);
+        alert('حدث خطأ أثناء تحديد المدينة. يرجى المحاولة مرة أخرى.');
+    }
+}
+
+async function showError(error) {
+    let errorMessage = '';
+    switch(error.code) {
+        case error.PERMISSION_DENIED:
+            errorMessage = "تم رفض طلب تحديد الموقع الجغرافي.";
+            break;
+        case error.POSITION_UNAVAILABLE:
+            errorMessage = "معلومات الموقع غير متوفرة.";
+            break;
+        case error.TIMEOUT:
+            errorMessage = "انتهت مهلة طلب الموقع.";
+            break;
+        case error.UNKNOWN_ERROR:
+            errorMessage = "حدث خطأ غير معروف.";
+            break;
+    }
+    alert(errorMessage);
+    document.getElementById("city").style.display = "block";
+}
+
+function fetchCityInfo() {
+    const city = document.getElementById("city").value;
+    if (city) {
+        fetchCityDetails(city);
+        fetchWeatherInfo(city);
+        fetchPrayerTimes(city);
+        fetchCityImage(city);
+    }
+}
+
+function fetchCityDetails(city) {
+    const apiUrl = `https://ar.wikipedia.org/api/rest_v1/page/summary/${city}`;
+    fetch(apiUrl)
+        .then(response => response.json())
+        .then(data => {
+            const cityInfo = `
+                <h3>معلومات عن المدينة</h3>
+                <p><a href="https://www.google.com/maps/search/?api=1&query=${city}" target="_blank">${city}</a></p>
+                <p>${data.extract}</p>
+            `;
+            document.getElementById("city-info").innerHTML = cityInfo;
+        })
+        .catch(error => console.error('Error fetching city details:', error));
+}
+
+function fetchWeatherInfo(city) {
+    const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=cbc51ce6b403bc63ab3729807141973a&units=metric&lang=ar`;
+    fetch(apiUrl)
+        .then(response => response.json())
+        .then(data => {
+            const weatherInfo = `
+                <h3>أحوال الطقس</h3>
+                <p>درجة الحرارة: ${data.main.temp}°C</p>
+                <p>الرطوبة: ${data.main.humidity}%</p>
+                <p>الطقس: ${data.weather[0].description}</p>
+            `;
+            document.getElementById("weather-info").innerHTML = weatherInfo;
+        })
+        .catch(error => console.error('Error fetching weather info:', error));
+}
+
+function fetchPrayerTimes(city) {
+    const apiUrl = `https://api.aladhan.com/v1/timingsByCity?city=${city}&country=Saudi%20Arabia&method=4`;
+    fetch(apiUrl)
+        .then(response => response.json())
+        .then(data => {
+            const prayerTimes = data.data.timings;
+            const prayerTimesInfo = `
+                <h3>مواقيت الصلاة</h3>
+                <p>الفجر: ${prayerTimes.Fajr}</p>
+                <p>الظهر: ${prayerTimes.Dhuhr}</p>
+                <p>العصر: ${prayerTimes.Asr}</p>
+                <p>المغرب: ${prayerTimes.Maghrib}</p>
+                <p>العشاء: ${prayerTimes.Isha}</p>
+            `;
+            document.getElementById("prayer-times").innerHTML = prayerTimesInfo;
+        })
+        .catch(error => console.error('Error fetching prayer times:', error));
+}
+
+function fetchCityImage(city) {
+    const apiUrl = `https://en.wikipedia.org/w/api.php?action=query&titles=${city}&prop=pageimages&format=json&pithumbsize=500&origin=*`;
+    fetch(apiUrl)
+        .then(response => response.json())
+        .then(data => {
+            const pages = data.query.pages;
+            const pageId = Object.keys(pages)[0];
+            const imageUrl = pages[pageId].thumbnail ? pages[pageId].thumbnail.source : null;
+            if (imageUrl) {
+                const cityImage = `
+                    <h3>صورة للمدينة</h3>
+                    <img src="${imageUrl}" alt="صورة للمدينة" style="width:100%; border-radius: 8px;">
+                `;
+                document.getElementById("city-image").innerHTML = cityImage;
+            } else {
+                document.getElementById("city-image").innerHTML = "<p>لم يتم العثور على صورة للمدينة.</p>";
+            }
+        })
+        .catch(error => console.error('Error fetching city image:', error));
+}
+
+function hideKeyboard(event) {
+    if (event.key === "Enter") {
+        document.activeElement.blur();
+    }
+}
+
+function shareCityInfo() {
+    const cityInfo = document.getElementById("city-info").innerText;
+    const weatherInfo = document.getElementById("weather-info").innerText;
+    const prayerTimes = document.getElementById("prayer-times").innerText;
+    const shareData = {
+        title: 'معلومات المدينة',
+        text: `${cityInfo}\n${weatherInfo}\n${prayerTimes}`,
+        url: window.location.href
+    };
+    navigator.share(shareData).catch(console.error);
+}
+
+function speakCityInfo() {
+    const cityInfo = document.getElementById("city-info").innerText;
+    const weatherInfo = document.getElementById("weather-info").innerText;
+    const prayerTimes = document.getElementById("prayer-times").innerText;
+    const utterance = new SpeechSynthesisUtterance(`${cityInfo}\n${weatherInfo}\n${prayerTimes}`);
+    utterance.lang = 'ar-SA';
+    speechSynthesis.speak(utterance);
+}
+
+function stopSpeaking() {
+    speechSynthesis.cancel();
+}
+    </script>
 </body>
 </html>
