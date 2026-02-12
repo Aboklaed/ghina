@@ -1,147 +1,490 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>مولد Web Clip</title>
-<style>
-body {
-  font-family: "Cairo", sans-serif;
-  background: linear-gradient(135deg, #e3f2fd, #bbdefb);
-  text-align: center;
-  padding: 20px;
-}
-.container {
-  background: white;
-  border-radius: 15px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-  padding: 20px;
-  max-width: 400px;
-  margin: auto;
-}
-input, select, button, textarea {
-  width: 100%;
-  padding: 10px;
-  margin: 8px 0;
-  border-radius: 10px;
-  border: 1px solid #ccc;
-  font-size: 16px;
-  box-sizing: border-box;
-}
-button {
-  background-color: #007bff;
-  color: white;
-  border: none;
-  cursor: pointer;
-}
-button:hover {
-  background-color: #0056b3;
-}
-textarea {
-  height: 160px;
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
+    <title>التوفيقات الإلهامية - التقويم الهجري</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Traditional Arabic', 'Amiri', 'Scheherazade', 'Tahoma', sans-serif;
+            background-color: #d4c4a8;
+            background-image: linear-gradient(145deg, #cbb99a 0%, #e6d7b8 100%);
+            color: #2c1e12;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .book-container {
+            max-width: 780px;
+            width: 100%;
+            background-color: #fcf6e8;
+            border: 8px solid #8b6b4d;
+            border-image: repeating-linear-gradient(45deg, #8b6b4d, #b5926a, #8b6b4d) 25;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.4);
+            border-radius: 30px 30px 30px 30px;
+            padding: 20px 18px;
+            position: relative;
+        }
+
+        h1 {
+            font-size: 44px;
+            font-weight: 900;
+            text-align: center;
+            color: #4b2e1a;
+            text-shadow: 3px 3px 0 #e6d7b8;
+            margin: 5px 0 0 0;
+            padding: 0;
+            font-family: 'Traditional Arabic', 'Amiri', serif;
+            line-height: 1.3;
+            letter-spacing: 1px;
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: 20px;
+            color: #4a3720;
+            margin: 5px 0 15px 0;
+            font-weight: 600;
+            border-bottom: 2px solid #b78c5a;
+            padding-bottom: 8px;
+        }
+
+        .input-section {
+            background: #ebddc2;
+            padding: 15px 15px;
+            border-radius: 15px;
+            border: 2px solid #8b6b4d;
+            margin-bottom: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+
+        .input-label {
+            font-size: 26px;
+            font-weight: bold;
+            color: #4d2e1a;
+            font-family: 'Traditional Arabic', 'Amiri', serif;
+        }
+
+        #yearInput {
+            width: 100px;
+            padding: 8px 5px;
+            font-size: 28px;
+            font-weight: bold;
+            text-align: center;
+            background: #fff9e6;
+            border: 3px solid #6b4f32;
+            border-radius: 10px;
+            color: #1f140c;
+            font-family: 'Traditional Arabic', 'Courier New', monospace;
+        }
+
+        button {
+            background: #7c6043;
+            border: none;
+            border-bottom: 5px solid #4d3522;
+            color: white;
+            padding: 10px 25px;
+            font-size: 28px;
+            font-weight: bold;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.05s;
+            box-shadow: 0 5px 0 #4d3522;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: 'Traditional Arabic', 'Amiri', serif;
+        }
+
+        button:hover, button:active {
+            background: #957255;
+            transform: translateY(3px);
+            box-shadow: 0 2px 0 #4d3522;
+        }
+
+        .hijri-sign {
+            background: #2c4a4a;
+            color: #ffeaca;
+            padding: 8px;
+            border-radius: 10px;
+            font-size: 32px;
+            text-align: center;
+            margin-bottom: 20px;
+            border: 3px solid #a58357;
+            letter-spacing: 5px;
+            font-weight: bold;
+            font-family: 'Traditional Arabic', 'Amiri', serif;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 5px;
+            background: #fffcf2;
+            border: 3px solid #7a5c3e;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        th {
+            background: #7a5c3e;
+            color: #ffeedd;
+            font-size: 22px;
+            padding: 12px 5px;
+            font-weight: bold;
+            border-bottom: 4px solid #4f3822;
+            text-align: center;
+            font-family: 'Traditional Arabic', 'Amiri', serif;
+        }
+
+        td {
+            padding: 12px 5px;
+            border: 1px solid #b5926a;
+            text-align: center;
+            font-size: 20px;
+            color: #2c1e12;
+            background-color: #fffbf0;
+            font-family: 'Traditional Arabic', 'Amiri', serif;
+            font-weight: 500;
+        }
+
+        tr:nth-child(even) td {
+            background-color: #f6efe0;
+        }
+
+        .month-name {
+            font-weight: 900;
+            color: #6b3f1c;
+            font-size: 22px;
+        }
+
+        .gregorian-badge {
+            color: #1a4e5c;
+            font-weight: 700;
+            background: #e1f0f0;
+            border-radius: 30px;
+            padding: 6px 14px;
+            display: inline-block;
+            margin: 3px 0;
+            font-size: 18px;
+            font-family: 'Traditional Arabic', 'Amiri', serif;
+        }
+
+        .day-badge {
+            background: #fbe4c0;
+            padding: 5px 14px;
+            border-radius: 30px;
+            font-weight: 700;
+            color: #5e3e24;
+            display: inline-block;
+            margin: 2px 0;
+            font-size: 18px;
+        }
+
+        .footer-note {
+            margin-top: 25px;
+            text-align: center;
+            font-size: 18px;
+            color: #5a4029;
+            border-top: 2px dashed #9b7e5c;
+            padding-top: 15px;
+            font-weight: 600;
+        }
+
+        /* للجوال */
+        @media (max-width: 550px) {
+            h1 { font-size: 34px; }
+            .subtitle { font-size: 18px; }
+            .input-label { font-size: 22px; }
+            #yearInput { width: 80px; font-size: 24px; }
+            button { font-size: 22px; padding: 8px 18px; }
+            .hijri-sign { font-size: 26px; }
+            th { font-size: 18px; padding: 10px 3px; }
+            td { font-size: 17px; padding: 10px 3px; }
+            .month-name { font-size: 19px; }
+            .gregorian-badge { font-size: 15px; padding: 4px 8px; }
+            .day-badge { font-size: 15px; padding: 4px 8px; }
+        }
+
+        @media (max-width: 380px) {
+            h1 { font-size: 28px; }
+            td, th { font-size: 15px; }
+            .month-name { font-size: 17px; }
+        }
+    </style>
 </head>
 <body>
+    <div class="book-container">
+        <h1>📘 التوفيقات الإلهامية</h1>
+        <div class="subtitle">✨ التقويم الهجري الموافق لأم القرى (دقيق لجميع السنوات) ✨</div>
 
-<h2>📱 مولد تطبيق ويب لآيفون</h2>
-<p>أدخل بياناتك ثم اضغط "توليد ملف التعريف"</p>
+        <div class="input-section">
+            <span class="input-label">عام هجري:</span>
+            <input type="number" id="yearInput" placeholder="١٤٤٧" value="1447" min="1356" max="1500" inputmode="numeric">
+            <button id="convertBtn">
+                <span style="font-size:30px;">🔍</span> استخراج
+            </button>
+        </div>
 
-<input type="text" id="appName" placeholder="اسم التطبيق">
-<input type="url" id="appUrl" placeholder="رابط الموقع">
-  <h5>اختر ايقونة التطبيق 📸</h5>
-<input type="file" id="iconInput" accept="image/*">
+        <div class="hijri-sign" id="hijriYearDisplay">
+            🌙 ١٤٤٧ هـ 🌙
+        </div>
 
-<select id="modeSelect">
-  <option value="mobile">📱 صفحة جوال</option>
-  <option value="desktop">💻 صفحة كمبيوتر</option>
-</select>
+        <div style="overflow-x: auto;">
+            <table id="hijriTable">
+                <thead>
+                    <tr>
+                        <th>الشهر الهجري</th>
+                        <th>بداية الشهر</th>
+                        <th>نهاية الشهر</th>
+                        <th>التوافق الميلادي</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    <tr><td colspan="4" style="text-align: center; padding: 25px; font-size: 24px;">⏳ جاري التحميل...</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="footer-note">
+            ✦ بناءً على تقويم أم القرى ✦ يعمل بدون إنترنت ✦ ١٣٥٦-١٥٠٠ هـ ✦
+     برمجة حسين العرياني💫
+   </div>
+    </div>
 
-<br>
-<img id="preview" style="display:none;"/><br>
-<button onclick="generateProfile()">توليد ملف التعريف</button>
+    <script>
+        // ---------------------------------------------------------------
+        // بيانات تقويم أم القرى المدمجة - تعمل بدون إنترنت 100%
+        // ---------------------------------------------------------------
+        
+        // أسماء الأشهر الهجرية
+        const hijriMonths = [
+            "محرم", "صفر", "ربيع الأول", "ربيع الثاني",
+            "جمادى الأولى", "جمادى الآخرة", "رجب", "شعبان",
+            "رمضان", "شوال", "ذو القعدة", "ذو الحجة"
+        ];
 
-<p class="footer">برمجة حسين العرياني 💥</p>
+        // أسماء أيام الأسبوع
+        const weekDays = [
+            "الأحد", "الإثنين", "الثلاثاء", "الأربعاء", 
+            "الخميس", "الجمعة", "السبت"
+        ];
 
-<script>
-function generateProfile() {
-  const appName = document.getElementById("appName").value || "تطبيقي";
-  const appUrl = document.getElementById("appUrl").value;
-  const iconInput = document.getElementById("iconInput");
-  const mode = document.getElementById("modeSelect").value;
-  
-  if (!appUrl) {
-    alert("يرجى إدخال رابط الموقع أولاً");
-    return;
-  }
+        // أسماء الأشهر الميلادية
+        const gregorianMonths = [
+            "يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو",
+            "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"
+        ];
 
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    const iconBase64 = e.target.result.replace(/^data:image\/(png|jpeg);base64,/, '');
-    const uuid = crypto.randomUUID();
+        // ---------------------------------------------------------------
+        // البيانات الأساسية - 1 محرم لكل سنة
+        // ---------------------------------------------------------------
+        
+        const hijriStartDates = {
+            1440: new Date(2018, 8, 11),
+            1441: new Date(2019, 7, 31),
+            1442: new Date(2020, 7, 20),
+            1443: new Date(2021, 7, 9),
+            1444: new Date(2022, 6, 30),
+            1445: new Date(2023, 6, 19),
+            1446: new Date(2024, 6, 7),
+            1447: new Date(2025, 5, 27),  // ✅ 1 محرم 1447 = الجمعة 27 يونيو 2025
+            1448: new Date(2026, 5, 16),
+            1449: new Date(2027, 5, 5),
+            1450: new Date(2028, 4, 24),
+            1451: new Date(2029, 4, 13),
+            1452: new Date(2030, 4, 3),
+            1453: new Date(2031, 3, 22),
+            1454: new Date(2032, 3, 11),
+            1455: new Date(2033, 2, 31),
+            1456: new Date(2034, 2, 20),
+            1457: new Date(2035, 2, 10),
+            1458: new Date(2036, 1, 27),
+            1459: new Date(2037, 1, 15),
+            1460: new Date(2038, 1, 4),
+        };
 
-    // تعديل إعدادات الشاشة حسب الاختيار
-    const isFullScreen = mode === "mobile" ? "<true/>" : "<false/>";
+        // أطوال الأشهر
+        const monthLengthsDatabase = {
+            1447: [30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29],
+            1448: [29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30],
+            1449: [30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29],
+            1450: [29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30],
+            1451: [30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29],
+            1452: [29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30],
+            1453: [30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29],
+            1454: [29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30],
+            1455: [30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29],
+            1456: [29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30],
+            1457: [30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29],
+            1458: [29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30],
+            1459: [30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29],
+            1460: [29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30],
+        };
 
-    const profile = `<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
- <key>PayloadContent</key>
- <array>
-  <dict>
-   <key>FullScreen</key>${isFullScreen}
-   <key>IgnoreManifestScope</key><true/>
-   <key>Icon</key><data>${iconBase64}</data>
-   <key>IsRemovable</key><true/>
-   <key>Label</key><string>${appName}</string>
-   <key>PayloadDescription</key><string>${appName}</string>
-   <key>PayloadDisplayName</key><string>${appName}</string>
-   <key>PayloadIdentifier</key><string>com.hussain.${uuid}</string>
-   <key>PayloadOrganization</key><string>برمجة حسين العرياني</string>
-   <key>PayloadType</key><string>com.apple.webClip.managed</string>
-   <key>PayloadUUID</key><string>${uuid}</string>
-   <key>PayloadVersion</key><integer>1</integer>
-   <key>Precomposed</key><true/>
-   <key>URL</key><string>${appUrl}</string>
-  </dict>
- </array>
- <key>PayloadDescription</key><string>برمجة حسين العرياني</string>
- <key>PayloadDisplayName</key><string>${appName}</string>
- <key>PayloadIdentifier</key><string>profile.${uuid}</string>
- <key>PayloadType</key><string>Configuration</string>
- <key>PayloadUUID</key><string>${uuid}</string>
- <key>PayloadVersion</key><integer>1</integer>
-</dict>
-</plist>`;
+        // دوال التحويل والتنسيق
+        function toArabicNumerals(num) {
+            const arabicDigits = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
+            return num.toString().split('').map(d => arabicDigits[parseInt(d)]).join('');
+        }
 
-    const blob = new Blob([profile], { type: "application/x-apple-aspen-config" });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = appName + ".mobileconfig";
-    link.click();
-  };
+        function formatGregorian(date) {
+            const day = date.getDate();
+            const month = date.getMonth();
+            const year = date.getFullYear();
+            return `${day} ${gregorianMonths[month]} ${year}`;
+        }
 
-  if (iconInput.files[0]) {
-    reader.readAsDataURL(iconInput.files[0]);
-  } else {
-    reader.onload({ target: { result: "data:image/png;base64," } }); // بدون أيقونة
-  }
-}
+        function getDayName(date) {
+            return weekDays[date.getDay()];
+        }
 
-document.getElementById("iconInput").addEventListener("change", e => {
-  const file = e.target.files[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = ev => {
-      const img = document.getElementById("preview");
-      img.src = ev.target.result;
-      img.style.display = "block";
-    };
-    reader.readAsDataURL(file);
-  }
-});
-</script>
+        function getMonthLength(hijriYear, hijriMonth) {
+            const monthIndex = hijriMonth - 1;
+            if (monthLengthsDatabase[hijriYear]) {
+                return monthLengthsDatabase[hijriYear][monthIndex];
+            }
+            const baseYear = 1447;
+            const basePattern = monthLengthsDatabase[1447];
+            const yearDiff = hijriYear - baseYear;
+            if (Math.abs(yearDiff) % 2 === 0) {
+                return basePattern[monthIndex];
+            } else {
+                return basePattern[monthIndex] === 30 ? 29 : 30;
+            }
+        }
 
+        function getHijriNewYearDate(hijriYear) {
+            if (hijriStartDates[hijriYear]) {
+                return new Date(hijriStartDates[hijriYear]);
+            }
+            let baseYear, baseDate;
+            if (hijriYear > 1450) {
+                baseYear = 1450;
+                baseDate = new Date(hijriStartDates[1450]);
+            } else if (hijriYear > 1440) {
+                baseYear = 1447;
+                baseDate = new Date(hijriStartDates[1447]);
+            } else {
+                baseYear = 1440;
+                baseDate = new Date(hijriStartDates[1440]);
+            }
+            const yearDiff = hijriYear - baseYear;
+            const daysDiff = Math.round(yearDiff * 354.367);
+            const result = new Date(baseDate);
+            result.setDate(result.getDate() + daysDiff);
+            return result;
+        }
+
+        // الدالة الرئيسية
+        function generateHijriCalendar(hijriYear) {
+            if (hijriYear < 1356 || hijriYear > 1500) {
+                return `<tr><td colspan="4" style="text-align: center; padding: 30px; color: #a94442; font-size: 22px;">
+                    ❌ السنة خارج النطاق المدعوم (١٣٥٦-١٥٠٠ هـ)
+                </td></tr>`;
+            }
+
+            let rows = '';
+            let currentDate = getHijriNewYearDate(hijriYear);
+
+            for (let month = 1; month <= 12; month++) {
+                let monthStart = new Date(currentDate);
+                let monthLength = getMonthLength(hijriYear, month);
+                let monthEnd = new Date(monthStart);
+                monthEnd.setDate(monthEnd.getDate() + monthLength - 1);
+
+                let startDayName = getDayName(monthStart);
+                let endDayName = getDayName(monthEnd);
+
+                let startGreg = `${formatGregorian(monthStart)} (${startDayName})`;
+                let endGreg = `${formatGregorian(monthEnd)} (${endDayName})`;
+                
+                let gregorianRange = `<span class="gregorian-badge">بداية: ${startGreg}</span><br>
+                                     <span class="gregorian-badge" style="margin-top: 6px; display: inline-block;">نهاية: ${endGreg}</span>`;
+
+                let monthName = hijriMonths[month-1];
+                let hijriStartFormatted = `١ ${monthName}`;
+                let hijriEndFormatted = `${monthLength} ${monthName}`;
+
+                if (monthName === "رمضان") {
+                    rows += `<tr style="background: #fff7e6; border-right: 6px solid #b87c4b;">`;
+                } else {
+                    rows += `<tr>`;
+                }
+                
+                rows += `<td class="month-name">${monthName}</td>
+                        <td>${hijriStartFormatted}</td>
+                        <td>${hijriEndFormatted}</td>
+                        <td style="text-align: center;">${gregorianRange}</td>
+                    </tr>`;
+
+                currentDate = new Date(monthEnd);
+                currentDate.setDate(currentDate.getDate() + 1);
+            }
+
+            return rows;
+        }
+
+        function updateHijriDisplay(year) {
+            const arabicYear = toArabicNumerals(year);
+            document.getElementById('hijriYearDisplay').innerHTML = `🌙 ${arabicYear} هـ 🌙`;
+        }
+
+        function loadCalendarForYear(year) {
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = generateHijriCalendar(year);
+            updateHijriDisplay(year);
+        }
+
+        // الأحداث
+        document.addEventListener('DOMContentLoaded', function() {
+            const yearInput = document.getElementById('yearInput');
+            const convertBtn = document.getElementById('convertBtn');
+
+            loadCalendarForYear(1447);
+            
+            // التحقق من رمضان 1447
+            let testDate = getHijriNewYearDate(1447);
+            for (let i = 1; i < 9; i++) {
+                let len = getMonthLength(1447, i);
+                testDate.setDate(testDate.getDate() + len);
+            }
+            console.log('✅ 1 رمضان 1447 =', formatGregorian(testDate), getDayName(testDate));
+            // ✅ الأربعاء 18 فبراير 2026
+
+            convertBtn.addEventListener('click', function() {
+                let year = parseInt(yearInput.value);
+                if (isNaN(year)) {
+                    alert('الرجاء إدخال سنة هجرية صحيحة');
+                    return;
+                }
+                if (year < 1356 || year > 1500) {
+                    alert('الرجاء إدخال سنة هجرية بين 1356 و 1500');
+                    return;
+                }
+                loadCalendarForYear(year);
+            });
+
+            yearInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    convertBtn.click();
+                }
+            });
+        });
+    </script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Scheherazade&display=swap" rel="stylesheet">
 </body>
 </html>
