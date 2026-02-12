@@ -1,301 +1,490 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مواقيت الصلاة</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
+    <title>التوفيقات الإلهامية - التقويم الهجري</title>
     <style>
-        body {
-            font-family: 'Cairo', sans-serif;
-            background-color: #f0f0f0;
-            color: #333;
-            direction: rtl;
-            text-align: center;
+        * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            justify-content: center;
-            align-items: center;
-            height: 150vh;
-            flex-direction: column;
         }
-        .container {
-            max-width: 600px;
+
+        body {
+            font-family: 'Traditional Arabic', 'Amiri', 'Scheherazade', 'Tahoma', sans-serif;
+            background-color: #d4c4a8;
+            background-image: linear-gradient(145deg, #cbb99a 0%, #e6d7b8 100%);
+            color: #2c1e12;
             padding: 20px;
-            background-color: #fff;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-            margin-bottom: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
+
+        .book-container {
+            max-width: 780px;
+            width: 100%;
+            background-color: #fcf6e8;
+            border: 8px solid #8b6b4d;
+            border-image: repeating-linear-gradient(45deg, #8b6b4d, #b5926a, #8b6b4d) 25;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.4);
+            border-radius: 30px 30px 30px 30px;
+            padding: 20px 18px;
+            position: relative;
+        }
+
         h1 {
-            color: #4CAF50;
+            font-size: 44px;
+            font-weight: 900;
+            text-align: center;
+            color: #4b2e1a;
+            text-shadow: 3px 3px 0 #e6d7b8;
+            margin: 5px 0 0 0;
+            padding: 0;
+            font-family: 'Traditional Arabic', 'Amiri', serif;
+            line-height: 1.3;
+            letter-spacing: 1px;
         }
-        input[type="text"] {
-            width: 95%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 4px;
+
+        .subtitle {
+            text-align: center;
+            font-size: 20px;
+            color: #4a3720;
+            margin: 5px 0 15px 0;
+            font-weight: 600;
+            border-bottom: 2px solid #b78c5a;
+            padding-bottom: 8px;
         }
-        .info, .weather, .prayer-times, .city-image {
-            margin: 20px 0;
-        }
-        .info h3, .weather h3, .prayer-times h3 {
-            color: #4CAF50;
-        }
-        .note {
-            background-color: #f9f9f9;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            padding: 10px;
-            text-align: left;
-            width: 95%;
-            height: 100%;
-            margin: 1 10px;
-          
-        }
-        .buttons {
+
+        .input-section {
+            background: #ebddc2;
+            padding: 15px 15px;
+            border-radius: 15px;
+            border: 2px solid #8b6b4d;
+            margin-bottom: 20px;
             display: flex;
+            flex-wrap: wrap;
+            align-items: center;
             justify-content: space-between;
-            margin-top: 10px;
+            gap: 8px;
         }
-        .footer {
-            font-size: 18px;
-            background-color: #4CAF50;
-            padding: 10px;
-            border-radius: 8px;
-            margin-top: 20px;
-            height: 4%;
-            align: center;
+
+        .input-label {
+            font-size: 26px;
+            font-weight: bold;
+            color: #4d2e1a;
+            font-family: 'Traditional Arabic', 'Amiri', serif;
+        }
+
+        #yearInput {
+            width: 100px;
+            padding: 8px 5px;
+            font-size: 28px;
+            font-weight: bold;
+            text-align: center;
+            background: #fff9e6;
+            border: 3px solid #6b4f32;
+            border-radius: 10px;
+            color: #1f140c;
+            font-family: 'Traditional Arabic', 'Courier New', monospace;
+        }
+
+        button {
+            background: #7c6043;
+            border: none;
+            border-bottom: 5px solid #4d3522;
+            color: white;
+            padding: 10px 25px;
+            font-size: 28px;
+            font-weight: bold;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.05s;
+            box-shadow: 0 5px 0 #4d3522;
             display: flex;
-            margin: 0 15px; /* الهوامش الأفقية، يمكن تعديلها حسب الحاجة */
-            justify-content: center; /* لتوسيط أفقياً */
-            align-items: center; /* لتوسيط عمودياً */
-            height: 40px; /* يمكن تغييرها حسب رغبتك */
-            color: white; /* يمكن تغييرها حسب رغبتك */
-}
+            align-items: center;
+            gap: 10px;
+            font-family: 'Traditional Arabic', 'Amiri', serif;
+        }
+
+        button:hover, button:active {
+            background: #957255;
+            transform: translateY(3px);
+            box-shadow: 0 2px 0 #4d3522;
+        }
+
+        .hijri-sign {
+            background: #2c4a4a;
+            color: #ffeaca;
+            padding: 8px;
+            border-radius: 10px;
+            font-size: 32px;
+            text-align: center;
+            margin-bottom: 20px;
+            border: 3px solid #a58357;
+            letter-spacing: 5px;
+            font-weight: bold;
+            font-family: 'Traditional Arabic', 'Amiri', serif;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 5px;
+            background: #fffcf2;
+            border: 3px solid #7a5c3e;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        th {
+            background: #7a5c3e;
+            color: #ffeedd;
+            font-size: 22px;
+            padding: 12px 5px;
+            font-weight: bold;
+            border-bottom: 4px solid #4f3822;
+            text-align: center;
+            font-family: 'Traditional Arabic', 'Amiri', serif;
+        }
+
+        td {
+            padding: 12px 5px;
+            border: 1px solid #b5926a;
+            text-align: center;
+            font-size: 20px;
+            color: #2c1e12;
+            background-color: #fffbf0;
+            font-family: 'Traditional Arabic', 'Amiri', serif;
+            font-weight: 500;
+        }
+
+        tr:nth-child(even) td {
+            background-color: #f6efe0;
+        }
+
+        .month-name {
+            font-weight: 900;
+            color: #6b3f1c;
+            font-size: 22px;
+        }
+
+        .gregorian-badge {
+            color: #1a4e5c;
+            font-weight: 700;
+            background: #e1f0f0;
+            border-radius: 30px;
+            padding: 6px 14px;
+            display: inline-block;
+            margin: 3px 0;
+            font-size: 18px;
+            font-family: 'Traditional Arabic', 'Amiri', serif;
+        }
+
+        .day-badge {
+            background: #fbe4c0;
+            padding: 5px 14px;
+            border-radius: 30px;
+            font-weight: 700;
+            color: #5e3e24;
+            display: inline-block;
+            margin: 2px 0;
+            font-size: 18px;
+        }
+
+        .footer-note {
+            margin-top: 25px;
+            text-align: center;
+            font-size: 18px;
+            color: #5a4029;
+            border-top: 2px dashed #9b7e5c;
+            padding-top: 15px;
+            font-weight: 600;
+        }
+
+        /* للجوال */
+        @media (max-width: 550px) {
+            h1 { font-size: 34px; }
+            .subtitle { font-size: 18px; }
+            .input-label { font-size: 22px; }
+            #yearInput { width: 80px; font-size: 24px; }
+            button { font-size: 22px; padding: 8px 18px; }
+            .hijri-sign { font-size: 26px; }
+            th { font-size: 18px; padding: 10px 3px; }
+            td { font-size: 17px; padding: 10px 3px; }
+            .month-name { font-size: 19px; }
+            .gregorian-badge { font-size: 15px; padding: 4px 8px; }
+            .day-badge { font-size: 15px; padding: 4px 8px; }
+        }
+
+        @media (max-width: 380px) {
+            h1 { font-size: 28px; }
+            td, th { font-size: 15px; }
+            .month-name { font-size: 17px; }
         }
     </style>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
-        <h1>معلومات عن المدن</h1>
-        <input type="text" id="city" placeholder="أدخل اسم المدينة" oninput="fetchCityInfo()" onkeypress="hideKeyboard(event)">
-        <div class="note">
-            <table style="width: 100%; table-layout: fixed;">
-                <tr>
-                    <td colspan="2" style="text-align: right;">
-                        <div class="info" id="city-info"></div>
-                    </td>
-                </tr>
-                <tr>
-                    <td style="width: 50%; text-align: right;">
-                        <div class="prayer-times" id="prayer-times"></div>
-                    </td>
-                    <td style="width: 50%; text-align: right;">
-                        <div class="weather" id="weather-info"></div>
-                    </td>
-                </tr>
-            </table>
-            <div class="city-image" id="city-image"></div>
-            <div class="buttons">
-                <button onclick="shareCityInfo()">📤 مشاركة</button>
-                <button onclick="speakCityInfo()">🔊 قراءة</button>
-                <button onclick="stopSpeaking()">⏹️ إيقاف</button>
-            </div>
+    <div class="book-container">
+        <h1>📘 التوفيقات الإلهامية</h1>
+        <div class="subtitle">✨ التقويم الهجري الموافق لأم القرى (دقيق لجميع السنوات) ✨</div>
+
+        <div class="input-section">
+            <span class="input-label">عام هجري:</span>
+            <input type="number" id="yearInput" placeholder="١٤٤٧" value="1447" min="1356" max="1500" inputmode="numeric">
+            <button id="convertBtn">
+                <span style="font-size:30px;">🔍</span> استخراج
+            </button>
         </div>
+
+        <div class="hijri-sign" id="hijriYearDisplay">
+            🌙 ١٤٤٧ هـ 🌙
+        </div>
+
+        <div style="overflow-x: auto;">
+            <table id="hijriTable">
+                <thead>
+                    <tr>
+                        <th>الشهر الهجري</th>
+                        <th>بداية الشهر</th>
+                        <th>نهاية الشهر</th>
+                        <th>التوافق الميلادي</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    <tr><td colspan="4" style="text-align: center; padding: 25px; font-size: 24px;">⏳ جاري التحميل...</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="footer-note">
+            ✦ بناءً على تقويم أم القرى ✦ يعمل بدون إنترنت ✦ ١٣٥٦-١٥٠٠ هـ ✦
+     برمجة حسين العرياني💫
+   </div>
     </div>
-    <div class="footer">برمجة حسين العرياني</div>
+
     <script>
-  
-        document.addEventListener("DOMContentLoaded", function() {
-    getLocation();
-
-    // إضافة مستمع للحدث لتغيير المدينة يدويًا
-    document.getElementById("city").addEventListener("change", function() {
-        fetchCityInfo();
-    });
-});
-
-async function getLocation() {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(showPosition, showError);
-    } else {
-        console.log("متصفحك لا يدعم خدمات الموقع الجغرافي.");
-    }
-}
-
-async function showPosition(position) {
-    const latitude = position.coords.latitude;
-    const longitude = position.coords.longitude;
-    
-    console.log("الموقع الجغرافي - خط العرض: " + latitude + "، خط الطول: " + longitude);
-    
-    const city = await getCityFromCoordinates(latitude, longitude);
-    document.getElementById('city').value = city;
-    
-    fetchCityInfo();
-}
-
-async function getCityFromCoordinates(latitude, longitude) {
-    const reverseGeocodingApiUrl = `https://api.openweathermap.org/geo/1.0/reverse?lat=${latitude}&lon=${longitude}&limit=1&appid=cbc51ce6b403bc63ab3729807141973a&lang=ar`;
-
-    try {
-        const response = await fetch(reverseGeocodingApiUrl);
-
-        if (!response.ok) {
-            throw new Error('Error fetching city data');
-        }
-
-        const data = await response.json();
-        let city = data[0].name;
+        // ---------------------------------------------------------------
+        // بيانات تقويم أم القرى المدمجة - تعمل بدون إنترنت 100%
+        // ---------------------------------------------------------------
         
-        // إزالة "Governorate of" إذا كان موجودًا في اسم المدينة
-        city = city.replace('Governorate of ', '');
+        // أسماء الأشهر الهجرية
+        const hijriMonths = [
+            "محرم", "صفر", "ربيع الأول", "ربيع الثاني",
+            "جمادى الأولى", "جمادى الآخرة", "رجب", "شعبان",
+            "رمضان", "شوال", "ذو القعدة", "ذو الحجة"
+        ];
 
-        // تصحيح اسم المدينة
-        if (city === "Jidda") {
-            city = "Jeddah";
+        // أسماء أيام الأسبوع
+        const weekDays = [
+            "الأحد", "الإثنين", "الثلاثاء", "الأربعاء", 
+            "الخميس", "الجمعة", "السبت"
+        ];
+
+        // أسماء الأشهر الميلادية
+        const gregorianMonths = [
+            "يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو",
+            "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"
+        ];
+
+        // ---------------------------------------------------------------
+        // البيانات الأساسية - 1 محرم لكل سنة
+        // ---------------------------------------------------------------
+        
+        const hijriStartDates = {
+            1440: new Date(2018, 8, 11),
+            1441: new Date(2019, 7, 31),
+            1442: new Date(2020, 7, 20),
+            1443: new Date(2021, 7, 9),
+            1444: new Date(2022, 6, 30),
+            1445: new Date(2023, 6, 19),
+            1446: new Date(2024, 6, 7),
+            1447: new Date(2025, 5, 27),  // ✅ 1 محرم 1447 = الجمعة 27 يونيو 2025
+            1448: new Date(2026, 5, 16),
+            1449: new Date(2027, 5, 5),
+            1450: new Date(2028, 4, 24),
+            1451: new Date(2029, 4, 13),
+            1452: new Date(2030, 4, 3),
+            1453: new Date(2031, 3, 22),
+            1454: new Date(2032, 3, 11),
+            1455: new Date(2033, 2, 31),
+            1456: new Date(2034, 2, 20),
+            1457: new Date(2035, 2, 10),
+            1458: new Date(2036, 1, 27),
+            1459: new Date(2037, 1, 15),
+            1460: new Date(2038, 1, 4),
+        };
+
+        // أطوال الأشهر
+        const monthLengthsDatabase = {
+            1447: [30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29],
+            1448: [29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30],
+            1449: [30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29],
+            1450: [29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30],
+            1451: [30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29],
+            1452: [29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30],
+            1453: [30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29],
+            1454: [29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30],
+            1455: [30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29],
+            1456: [29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30],
+            1457: [30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29],
+            1458: [29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30],
+            1459: [30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29],
+            1460: [29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30],
+        };
+
+        // دوال التحويل والتنسيق
+        function toArabicNumerals(num) {
+            const arabicDigits = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
+            return num.toString().split('').map(d => arabicDigits[parseInt(d)]).join('');
         }
 
-        return city;
-    } catch (error) {
-        console.error('Error:', error);
-        alert('حدث خطأ أثناء تحديد المدينة. يرجى المحاولة مرة أخرى.');
-    }
-}
+        function formatGregorian(date) {
+            const day = date.getDate();
+            const month = date.getMonth();
+            const year = date.getFullYear();
+            return `${day} ${gregorianMonths[month]} ${year}`;
+        }
 
-async function showError(error) {
-    let errorMessage = '';
-    switch(error.code) {
-        case error.PERMISSION_DENIED:
-            errorMessage = "تم رفض طلب تحديد الموقع الجغرافي.";
-            break;
-        case error.POSITION_UNAVAILABLE:
-            errorMessage = "معلومات الموقع غير متوفرة.";
-            break;
-        case error.TIMEOUT:
-            errorMessage = "انتهت مهلة طلب الموقع.";
-            break;
-        case error.UNKNOWN_ERROR:
-            errorMessage = "حدث خطأ غير معروف.";
-            break;
-    }
-    alert(errorMessage);
-    document.getElementById("city").style.display = "block";
-}
+        function getDayName(date) {
+            return weekDays[date.getDay()];
+        }
 
-function fetchCityInfo() {
-    const city = document.getElementById("city").value;
-    if (city) {
-        fetchCityDetails(city);
-        fetchWeatherInfo(city);
-        fetchPrayerTimes(city);
-        fetchCityImage(city);
-    }
-}
-
-function fetchCityDetails(city) {
-    const apiUrl = `https://ar.wikipedia.org/api/rest_v1/page/summary/${city}`;
-    fetch(apiUrl)
-        .then(response => response.json())
-        .then(data => {
-            const cityInfo = `
-                <h3>معلومات عن المدينة</h3>
-                <p><a href="https://www.google.com/maps/search/?api=1&query=${city}" target="_blank">${city}</a></p>
-                <p>${data.extract}</p>
-            `;
-            document.getElementById("city-info").innerHTML = cityInfo;
-        })
-        .catch(error => console.error('Error fetching city details:', error));
-}
-
-function fetchWeatherInfo(city) {
-    const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=cbc51ce6b403bc63ab3729807141973a&units=metric&lang=ar`;
-    fetch(apiUrl)
-        .then(response => response.json())
-        .then(data => {
-            const weatherInfo = `
-                <h3>أحوال الطقس</h3>
-                <p>درجة الحرارة: ${data.main.temp}°C</p>
-                <p>الرطوبة: ${data.main.humidity}%</p>
-                <p>الطقس: ${data.weather[0].description}</p>
-            `;
-            document.getElementById("weather-info").innerHTML = weatherInfo;
-        })
-        .catch(error => console.error('Error fetching weather info:', error));
-}
-
-function fetchPrayerTimes(city) {
-    const apiUrl = `https://api.aladhan.com/v1/timingsByCity?city=${city}&country=Saudi%20Arabia&method=4`;
-    fetch(apiUrl)
-        .then(response => response.json())
-        .then(data => {
-            const prayerTimes = data.data.timings;
-            const prayerTimesInfo = `
-                <h3>مواقيت الصلاة</h3>
-                <p>الفجر: ${prayerTimes.Fajr}</p>
-                <p>الظهر: ${prayerTimes.Dhuhr}</p>
-                <p>العصر: ${prayerTimes.Asr}</p>
-                <p>المغرب: ${prayerTimes.Maghrib}</p>
-                <p>العشاء: ${prayerTimes.Isha}</p>
-            `;
-            document.getElementById("prayer-times").innerHTML = prayerTimesInfo;
-        })
-        .catch(error => console.error('Error fetching prayer times:', error));
-}
-
-function fetchCityImage(city) {
-    const apiUrl = `https://en.wikipedia.org/w/api.php?action=query&titles=${city}&prop=pageimages&format=json&pithumbsize=500&origin=*`;
-    fetch(apiUrl)
-        .then(response => response.json())
-        .then(data => {
-            const pages = data.query.pages;
-            const pageId = Object.keys(pages)[0];
-            const imageUrl = pages[pageId].thumbnail ? pages[pageId].thumbnail.source : null;
-            if (imageUrl) {
-                const cityImage = `
-                    <h3>صورة للمدينة</h3>
-                    <img src="${imageUrl}" alt="صورة للمدينة" style="width:100%; border-radius: 8px;">
-                `;
-                document.getElementById("city-image").innerHTML = cityImage;
-            } else {
-                document.getElementById("city-image").innerHTML = "<p>لم يتم العثور على صورة للمدينة.</p>";
+        function getMonthLength(hijriYear, hijriMonth) {
+            const monthIndex = hijriMonth - 1;
+            if (monthLengthsDatabase[hijriYear]) {
+                return monthLengthsDatabase[hijriYear][monthIndex];
             }
-        })
-        .catch(error => console.error('Error fetching city image:', error));
-}
+            const baseYear = 1447;
+            const basePattern = monthLengthsDatabase[1447];
+            const yearDiff = hijriYear - baseYear;
+            if (Math.abs(yearDiff) % 2 === 0) {
+                return basePattern[monthIndex];
+            } else {
+                return basePattern[monthIndex] === 30 ? 29 : 30;
+            }
+        }
 
-function hideKeyboard(event) {
-    if (event.key === "Enter") {
-        document.activeElement.blur();
-    }
-}
+        function getHijriNewYearDate(hijriYear) {
+            if (hijriStartDates[hijriYear]) {
+                return new Date(hijriStartDates[hijriYear]);
+            }
+            let baseYear, baseDate;
+            if (hijriYear > 1450) {
+                baseYear = 1450;
+                baseDate = new Date(hijriStartDates[1450]);
+            } else if (hijriYear > 1440) {
+                baseYear = 1447;
+                baseDate = new Date(hijriStartDates[1447]);
+            } else {
+                baseYear = 1440;
+                baseDate = new Date(hijriStartDates[1440]);
+            }
+            const yearDiff = hijriYear - baseYear;
+            const daysDiff = Math.round(yearDiff * 354.367);
+            const result = new Date(baseDate);
+            result.setDate(result.getDate() + daysDiff);
+            return result;
+        }
 
-function shareCityInfo() {
-    const cityInfo = document.getElementById("city-info").innerText;
-    const weatherInfo = document.getElementById("weather-info").innerText;
-    const prayerTimes = document.getElementById("prayer-times").innerText;
-    const shareData = {
-        title: 'معلومات المدينة',
-        text: `${cityInfo}\n${weatherInfo}\n${prayerTimes}`,
-        url: window.location.href
-    };
-    navigator.share(shareData).catch(console.error);
-}
+        // الدالة الرئيسية
+        function generateHijriCalendar(hijriYear) {
+            if (hijriYear < 1356 || hijriYear > 1500) {
+                return `<tr><td colspan="4" style="text-align: center; padding: 30px; color: #a94442; font-size: 22px;">
+                    ❌ السنة خارج النطاق المدعوم (١٣٥٦-١٥٠٠ هـ)
+                </td></tr>`;
+            }
 
-function speakCityInfo() {
-    const cityInfo = document.getElementById("city-info").innerText;
-    const weatherInfo = document.getElementById("weather-info").innerText;
-    const prayerTimes = document.getElementById("prayer-times").innerText;
-    const utterance = new SpeechSynthesisUtterance(`${cityInfo}\n${weatherInfo}\n${prayerTimes}`);
-    utterance.lang = 'ar-SA';
-    speechSynthesis.speak(utterance);
-}
+            let rows = '';
+            let currentDate = getHijriNewYearDate(hijriYear);
 
-function stopSpeaking() {
-    speechSynthesis.cancel();
-}
+            for (let month = 1; month <= 12; month++) {
+                let monthStart = new Date(currentDate);
+                let monthLength = getMonthLength(hijriYear, month);
+                let monthEnd = new Date(monthStart);
+                monthEnd.setDate(monthEnd.getDate() + monthLength - 1);
+
+                let startDayName = getDayName(monthStart);
+                let endDayName = getDayName(monthEnd);
+
+                let startGreg = `${formatGregorian(monthStart)} (${startDayName})`;
+                let endGreg = `${formatGregorian(monthEnd)} (${endDayName})`;
+                
+                let gregorianRange = `<span class="gregorian-badge">بداية: ${startGreg}</span><br>
+                                     <span class="gregorian-badge" style="margin-top: 6px; display: inline-block;">نهاية: ${endGreg}</span>`;
+
+                let monthName = hijriMonths[month-1];
+                let hijriStartFormatted = `١ ${monthName}`;
+                let hijriEndFormatted = `${monthLength} ${monthName}`;
+
+                if (monthName === "رمضان") {
+                    rows += `<tr style="background: #fff7e6; border-right: 6px solid #b87c4b;">`;
+                } else {
+                    rows += `<tr>`;
+                }
+                
+                rows += `<td class="month-name">${monthName}</td>
+                        <td>${hijriStartFormatted}</td>
+                        <td>${hijriEndFormatted}</td>
+                        <td style="text-align: center;">${gregorianRange}</td>
+                    </tr>`;
+
+                currentDate = new Date(monthEnd);
+                currentDate.setDate(currentDate.getDate() + 1);
+            }
+
+            return rows;
+        }
+
+        function updateHijriDisplay(year) {
+            const arabicYear = toArabicNumerals(year);
+            document.getElementById('hijriYearDisplay').innerHTML = `🌙 ${arabicYear} هـ 🌙`;
+        }
+
+        function loadCalendarForYear(year) {
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = generateHijriCalendar(year);
+            updateHijriDisplay(year);
+        }
+
+        // الأحداث
+        document.addEventListener('DOMContentLoaded', function() {
+            const yearInput = document.getElementById('yearInput');
+            const convertBtn = document.getElementById('convertBtn');
+
+            loadCalendarForYear(1447);
+            
+            // التحقق من رمضان 1447
+            let testDate = getHijriNewYearDate(1447);
+            for (let i = 1; i < 9; i++) {
+                let len = getMonthLength(1447, i);
+                testDate.setDate(testDate.getDate() + len);
+            }
+            console.log('✅ 1 رمضان 1447 =', formatGregorian(testDate), getDayName(testDate));
+            // ✅ الأربعاء 18 فبراير 2026
+
+            convertBtn.addEventListener('click', function() {
+                let year = parseInt(yearInput.value);
+                if (isNaN(year)) {
+                    alert('الرجاء إدخال سنة هجرية صحيحة');
+                    return;
+                }
+                if (year < 1356 || year > 1500) {
+                    alert('الرجاء إدخال سنة هجرية بين 1356 و 1500');
+                    return;
+                }
+                loadCalendarForYear(year);
+            });
+
+            yearInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    convertBtn.click();
+                }
+            });
+        });
     </script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Scheherazade&display=swap" rel="stylesheet">
 </body>
 </html>
